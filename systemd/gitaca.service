@@ -1,0 +1,11 @@
+[Unit]
+Description=Start a server for gitaca
+
+[Service]
+Type=simple
+Restart=on-failure
+RemainAfterExit=no
+ExecStart=sudo -u git /usr/bin/node /home/fmarotta/gitaca/server/server.js
+
+[Install]
+WantedBy=default.target
