@@ -1,0 +1,5 @@
+config
+gitweb
+httpd
+log
+web-site/includes/config.php
