@@ -93,6 +93,8 @@ app.post('/register', function(req, res) {
 	fs.appendFileSync(userConfigFile, aliasmatch)
 	fs.appendFileSync(userConfigFile, locationmatch)
 
+	// NOTE: you should edit sudo configuration file to allow the user 
+	// `git' to run this command
 	child_process.execSync('sudo /usr/bin/systemctl reload httpd.service')
 
 	res.send('OK')
@@ -100,14 +102,47 @@ app.post('/register', function(req, res) {
 
 app.post('/newprj', function(req, res) {
 	var prjpath = req.body.prjpath
+	var description = req.body.description
+	var roers = req.body.roers
+	var rwers = req.body.rwers
+	var user = prjpath.split('/')[0]
+	var prjname = prjpath.split('/')[1]
 
+	// Create the repository
 	var output = child_process.execSync('/usr/bin/git init --bare --shared=group '+prjpath);
 	logger.debug(output)
 
-	if (output == 'Initialized empty shared Git repository in '+prjpath+"/\n")
-		res.send('OK');
-	else
+	if (output != 'Initialized empty shared Git repository in '+prjpath+"/\n") {
 		res.send(output);
+		return
+	}
+
+	// Add the description and the owner
+	try {
+		fs.appendFileSync(prjpath+'/description', description)
+	} catch (err) {
+		res.send(err)
+		return
+	}
+	try {
+		var listItem = prjname + ' ' + user
+		fs.appendFileSync(gitDir+user+'/projects_list', listItem)
+	} catch (err) {
+		res.send(err)
+		return
+	}
+
+	// Edit the configuration files
+	try {
+		var repoConfig = "";
+		fs.appendFileSync(repoConfigFile, repoConfig);
+	} catch (err) {
+		res.send(err)
+		return
+	}
+
+	res.send('OK');
+	return 
 })
 // }}}
 

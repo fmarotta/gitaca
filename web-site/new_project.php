@@ -30,8 +30,7 @@ if (isset($_SERVER["HTTP_SESSION"])
         }
         ?>
         <form method="post" name="new_project_form" action="<?php echo esc_url($_SERVER["PHP_SELF"]); ?>">
-		<input type="hidden" name="username" id="username" value="<?php
-echo $username; ?>" /><br>
+			<input type="hidden" name="username" id="username" value="<?php echo $username; ?>" /><br>
             Project Name: <input type="text" name="project" id="project" /><br>
             Description: <input type="text" name="description" id="description" /><br><br>
 			Owner: <?php echo $username; ?><br>
